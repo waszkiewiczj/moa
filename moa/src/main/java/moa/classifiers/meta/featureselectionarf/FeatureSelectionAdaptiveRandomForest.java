@@ -10,7 +10,6 @@ import moa.capabilities.ImmutableCapabilities;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.core.driftdetection.ChangeDetector;
-import moa.classifiers.meta.AdaptiveRandomForest;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.options.ClassOption;
@@ -47,6 +46,9 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
 
     public ClassOption warningDetectionMethodOption = new ClassOption("warningDetectionMethod", 'p',
             "Change detector for warnings (start training bkg learner)", ChangeDetector.class, "ADWINChangeDetector -a 1.0E-2");
+
+    public ClassOption featureSelectionMethodOption = new ClassOption("featureSelectionMethod", 'f',
+            "Change method of preliminary feature selection", FeatureSelector.class, "AllFeatureSelector");
 
     private FSARFLearner learner;
 
@@ -110,8 +112,10 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         double lambda = lambdaOption.getValue();
         ChangeDetector driftDetectionMethod = (ChangeDetector) getPreparedClassOption(driftDetectionMethodOption);
         ChangeDetector warningDetectionMethod = (ChangeDetector) getPreparedClassOption(warningDetectionMethodOption);
+        FeatureSelector featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
 
-        FSARFLearner learner = new FSARFLearner(treeLearner, ensembleSize, subspaceSize, lambda, driftDetectionMethod, warningDetectionMethod);
+        FSARFLearner learner = new FSARFLearner(treeLearner, ensembleSize, subspaceSize, lambda,
+                driftDetectionMethod, warningDetectionMethod, featureSelector);
 
         return learner;
     }
@@ -124,7 +128,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         // 2) mFeaturesModeOption
         int n = inst.numAttributes() - 1;  // Ignore class label ( -1 )
 
-        switch(this.mFeaturesModeOption.getChosenIndex()) {
+        switch (this.mFeaturesModeOption.getChosenIndex()) {
             case FeatureSelectionAdaptiveRandomForest.FEATURES_SQRT:
                 subspaceSize = (int) Math.round(Math.sqrt(n)) + 1;
                 break;
@@ -139,15 +143,15 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         }
 
         // m is negative, use size(features) + -m
-        if(subspaceSize < 0)
+        if (subspaceSize < 0)
             subspaceSize = n + subspaceSize;
         // Other sanity checks to avoid runtime errors.
         //  m <= 0 (m can be negative if this.subspace was negative and
         //  abs(m) > n), then use m = 1
-        if(subspaceSize <= 0)
+        if (subspaceSize <= 0)
             subspaceSize = 1;
         // m > n, then it should use n
-        if(subspaceSize > n)
+        if (subspaceSize > n)
             subspaceSize = n;
 
         return subspaceSize;

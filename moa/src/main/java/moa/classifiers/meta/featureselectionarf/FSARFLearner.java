@@ -15,8 +15,11 @@ public class FSARFLearner extends AbstractClassifier implements MultiClassClassi
     protected final double lambda;
     protected final ChangeDetector baseDritfDetectionMethod;
     protected final ChangeDetector baseWarningDetectionMethod;
+    protected final FeatureSelector featureSelector;
 
-    public FSARFLearner(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda, ChangeDetector baseDritfDetectionMethod, ChangeDetector baseWarningDetectionMethod) {
+    public FSARFLearner(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda,
+                        ChangeDetector baseDritfDetectionMethod, ChangeDetector baseWarningDetectionMethod,
+                        FeatureSelector featureSelector) {
         this.baseTree = baseTree;
         baseTree.resetLearning();
         this.ensembleSize = ensembleSize;
@@ -24,6 +27,7 @@ public class FSARFLearner extends AbstractClassifier implements MultiClassClassi
         this.lambda = lambda;
         this.baseDritfDetectionMethod = baseDritfDetectionMethod;
         this.baseWarningDetectionMethod = baseWarningDetectionMethod;
+        this.featureSelector = featureSelector;
     }
 
     @Override
