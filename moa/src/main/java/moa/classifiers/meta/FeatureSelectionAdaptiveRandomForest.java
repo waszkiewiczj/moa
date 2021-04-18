@@ -1,4 +1,4 @@
-package moa.classifiers.meta.featureselectionarf;
+package moa.classifiers.meta;
 
 import com.github.javacliparser.FloatOption;
 import com.github.javacliparser.IntOption;
@@ -10,6 +10,8 @@ import moa.capabilities.ImmutableCapabilities;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.core.driftdetection.ChangeDetector;
+import moa.classifiers.meta.arf.FSARFLearner;
+import moa.classifiers.meta.arf.FeatureSelector;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.options.ClassOption;
