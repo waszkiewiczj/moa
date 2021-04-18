@@ -12,6 +12,7 @@ import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.meta.arf.FSARFLearner;
 import moa.classifiers.meta.arf.FeatureSelector;
+import moa.classifiers.meta.arf.ModelChangeDetector;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.options.ClassOption;
@@ -43,11 +44,8 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     public FloatOption lambdaOption = new FloatOption("lambda", 'a',
             "The lambda parameter for bagging.", 6.0, 1.0, Float.MAX_VALUE);
 
-    public ClassOption driftDetectionMethodOption = new ClassOption("driftDetectionMethod", 'x',
-            "Change detector for drifts and its parameters", ChangeDetector.class, "ADWINChangeDetector -a 1.0E-3");
-
-    public ClassOption warningDetectionMethodOption = new ClassOption("warningDetectionMethod", 'p',
-            "Change detector for warnings (start training bkg learner)", ChangeDetector.class, "ADWINChangeDetector -a 1.0E-2");
+    public ClassOption modelChangeDetectorOption = new ClassOption("modelChangeDetector", 'd',
+            "Change detector for changing models in ensemble", ModelChangeDetector.class, "DriftModelChangeDetector");
 
     public ClassOption featureSelectionMethodOption = new ClassOption("featureSelectionMethod", 'f',
             "Change method of preliminary feature selection", FeatureSelector.class, "AllFeatureSelector");
@@ -112,12 +110,11 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         int ensembleSize = ensembleSizeOption.getValue();
         int subspaceSize = getSubspaceSize(inst);
         double lambda = lambdaOption.getValue();
-        ChangeDetector driftDetectionMethod = (ChangeDetector) getPreparedClassOption(driftDetectionMethodOption);
-        ChangeDetector warningDetectionMethod = (ChangeDetector) getPreparedClassOption(warningDetectionMethodOption);
+        ModelChangeDetector modelChangeDetector = (ModelChangeDetector) getPreparedClassOption(modelChangeDetectorOption);
         FeatureSelector featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
 
         FSARFLearner learner = new FSARFLearner(treeLearner, ensembleSize, subspaceSize, lambda,
-                driftDetectionMethod, warningDetectionMethod, featureSelector);
+                modelChangeDetector, featureSelector);
 
         return learner;
     }
