@@ -1,4 +1,4 @@
-package moa.classifiers.meta.featureselectionarf;
+package moa.classifiers.meta.arf;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.core.ObjectRepository;

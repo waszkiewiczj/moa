@@ -1,4 +1,4 @@
-package moa.classifiers.meta.featureselectionarf;
+package moa.classifiers.meta.arf;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.classifiers.AbstractClassifier;
@@ -47,7 +47,7 @@ public class FSARFLearner extends AbstractClassifier implements MultiClassClassi
     }
 
     @Override
-    protected Measurement[] getModelMeasurementsImpl() {
+    public Measurement[] getModelMeasurementsImpl() {
         return null;
     }
 

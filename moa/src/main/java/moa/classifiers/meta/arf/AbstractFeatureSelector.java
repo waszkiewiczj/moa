@@ -1,4 +1,4 @@
-package moa.classifiers.meta.featureselectionarf;
+package moa.classifiers.meta.arf;
 
 import moa.options.AbstractOptionHandler;
 
