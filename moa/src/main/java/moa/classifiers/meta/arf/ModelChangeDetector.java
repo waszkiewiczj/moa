@@ -2,14 +2,15 @@ package moa.classifiers.meta.arf;
 
 import moa.options.OptionHandler;
 
+import java.util.List;
+
 public interface ModelChangeDetector extends OptionHandler {
-    void init(int ensembleSize);
 
-    void update(int index, boolean correctlyClassifies);
+    void update(EnsembleWrapper ensemble);
 
-    boolean shouldBePopped(int index);
+    List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble);
 
-    boolean shouldBePushed(int index);
+    List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble);
 
     void resetLearning();
 }

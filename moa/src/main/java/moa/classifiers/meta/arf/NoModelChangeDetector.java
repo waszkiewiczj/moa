@@ -3,6 +3,9 @@ package moa.classifiers.meta.arf;
 import moa.core.ObjectRepository;
 import moa.tasks.TaskMonitor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NoModelChangeDetector extends AbstractModelChangeDetector {
 
     @Override
@@ -11,13 +14,13 @@ public class NoModelChangeDetector extends AbstractModelChangeDetector {
     }
 
     @Override
-    public void update(int index, boolean correctlyClassifies) { }
+    public void update(EnsembleWrapper ensemble) { }
 
     @Override
-    public boolean shouldBePopped(int index) { return false; }
+    public List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble) { return new ArrayList<>(); }
 
     @Override
-    public boolean shouldBePushed(int index) { return false; }
+    public List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble)  { return new ArrayList<>(); }
 
     @Override
     public void resetLearning() { }

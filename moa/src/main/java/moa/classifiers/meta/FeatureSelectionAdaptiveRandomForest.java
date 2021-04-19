@@ -9,8 +9,7 @@ import moa.capabilities.Capability;
 import moa.capabilities.ImmutableCapabilities;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.MultiClassClassifier;
-import moa.classifiers.core.driftdetection.ChangeDetector;
-import moa.classifiers.meta.arf.FSARFLearner;
+import moa.classifiers.meta.arf.EnsembleWrapper;
 import moa.classifiers.meta.arf.FeatureSelector;
 import moa.classifiers.meta.arf.ModelChangeDetector;
 import moa.classifiers.trees.ARFHoeffdingTree;
@@ -19,11 +18,6 @@ import moa.options.ClassOption;
 
 
 public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier implements MultiClassClassifier, CapabilitiesHandler {
-
-    protected static final int FEATURES_M = 0;
-    protected static final int FEATURES_SQRT = 1;
-    protected static final int FEATURES_SQRT_INV = 2;
-    protected static final int FEATURES_PERCENT = 3;
 
     public ClassOption treeLearnerOption = new ClassOption("treeLearner", 'l',
             "Random Forest Tree.", ARFHoeffdingTree.class,
@@ -50,7 +44,12 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     public ClassOption featureSelectionMethodOption = new ClassOption("featureSelectionMethod", 'f',
             "Change method of preliminary feature selection", FeatureSelector.class, "AllFeatureSelector");
 
-    private FSARFLearner learner;
+    protected static final int FEATURES_M = 0;
+    protected static final int FEATURES_SQRT = 1;
+    protected static final int FEATURES_SQRT_INV = 2;
+    protected static final int FEATURES_PERCENT = 3;
+
+    private EnsembleWrapper learner;
 
     @Override
     public String getPurposeString() {
@@ -60,7 +59,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     @Override
     public double[] getVotesForInstance(Instance inst) {
         if (learner == null) {
-            learner = initLearner(inst);
+            initEnsemble(inst);
         }
         return learner.getVotesForInstance(inst);
     }
@@ -68,33 +67,27 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     @Override
     public void resetLearningImpl() {
         if (learner != null) {
-            learner.resetLearningImpl();
+            learner.resetLearning();
         }
     }
 
     @Override
     public void trainOnInstanceImpl(Instance inst) {
         if (learner == null) {
-            learner = initLearner(inst);
+            initEnsemble(inst);
         }
         learner.trainOnInstanceImpl(inst);
     }
 
     @Override
-    protected Measurement[] getModelMeasurementsImpl() {
-        return learner != null ? learner.getModelMeasurementsImpl() : new Measurement[0];
-    }
+    protected Measurement[] getModelMeasurementsImpl() { return null; }
 
     @Override
-    public void getModelDescription(StringBuilder out, int indent) {
-        if (learner != null) {
-            learner.getModelDescription(out, indent);
-        }
-    }
+    public void getModelDescription(StringBuilder out, int indent) { }
 
     @Override
     public boolean isRandomizable() {
-        return learner != null && learner.isRandomizable();
+        return true;
     }
 
     @Override
@@ -105,18 +98,13 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
             return new ImmutableCapabilities(Capability.VIEW_STANDARD);
     }
 
-    private FSARFLearner initLearner(Instance inst) {
+    private void initEnsemble(Instance inst) {
         ARFHoeffdingTree treeLearner = (ARFHoeffdingTree) getPreparedClassOption(treeLearnerOption);
         int ensembleSize = ensembleSizeOption.getValue();
         int subspaceSize = getSubspaceSize(inst);
         double lambda = lambdaOption.getValue();
-        ModelChangeDetector modelChangeDetector = (ModelChangeDetector) getPreparedClassOption(modelChangeDetectorOption);
-        FeatureSelector featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
 
-        FSARFLearner learner = new FSARFLearner(treeLearner, ensembleSize, subspaceSize, lambda,
-                modelChangeDetector, featureSelector);
-
-        return learner;
+        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda);
     }
 
     private int getSubspaceSize(Instance inst) {

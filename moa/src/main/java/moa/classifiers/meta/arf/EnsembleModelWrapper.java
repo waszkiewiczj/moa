@@ -8,11 +8,10 @@ import moa.evaluation.ClassificationPerformanceEvaluator;
 
 public class EnsembleModelWrapper {
     public final int index;
+    public boolean correctlyClassifies;
 
     protected final ClassificationPerformanceEvaluator evaluator;
     protected ARFHoeffdingTree model;
-
-    private DoubleVector vote;
 
     public EnsembleModelWrapper(int index, ARFHoeffdingTree model, ClassificationPerformanceEvaluator evaluator) {
         this.index = index;
@@ -22,6 +21,8 @@ public class EnsembleModelWrapper {
 
     public void trainOnInstance(Instance inst, double weight) {
         DoubleVector vote = new DoubleVector(model.getVotesForInstance(inst));
+
+        correctlyClassifies = model.correctlyClassifies(inst);
 
         InstanceExample example = new InstanceExample(inst);
         evaluator.addResult(example, vote.getArrayRef());
