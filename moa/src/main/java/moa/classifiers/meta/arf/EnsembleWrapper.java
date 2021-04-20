@@ -6,8 +6,11 @@ import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.DoubleVector;
 import moa.core.Measurement;
 import moa.core.MiscUtils;
+import moa.evaluation.BasicClassificationPerformanceEvaluator;
 
-public class EnsembleWrapper extends AbstractClassifier {
+import java.util.Random;
+
+public class EnsembleWrapper {
 
     public final EnsembleModelWrapper[] ensemble;
     public final int ensembleSize;
@@ -17,14 +20,20 @@ public class EnsembleWrapper extends AbstractClassifier {
     protected final double lambda;
     protected final boolean weightedVote;
 
-    public EnsembleWrapper(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda, boolean weightedVote) {
+    private final Random classifierRandom;
+
+    public EnsembleWrapper(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda, boolean weightedVote, Random classifierRandom) {
         this.baseTree = baseTree;
         baseTree.resetLearning();
         this.ensembleSize = ensembleSize;
         this.subspaceSize = subspaceSize;
         this.lambda = lambda;
         this.weightedVote = weightedVote;
+        this.classifierRandom = classifierRandom;
         this.ensemble = new EnsembleModelWrapper[this.ensembleSize];
+        for (int i = 0; i < this.ensembleSize; i++) {
+            ensemble[i] = new EnsembleModelWrapper(i, (ARFHoeffdingTree) baseTree.copy(), new BasicClassificationPerformanceEvaluator());
+        }
     }
 
     public double[] getVotesForInstance(Instance inst) {
@@ -48,12 +57,6 @@ public class EnsembleWrapper extends AbstractClassifier {
         return combinedVote.getArrayRef();
     }
 
-    @Override
-    public boolean isRandomizable() {
-        return true;
-    }
-
-    @Override
     public void resetLearningImpl() {
         for(EnsembleModelWrapper ensembleModel: ensemble) {
             ensembleModel.resetLearning();
@@ -68,10 +71,4 @@ public class EnsembleWrapper extends AbstractClassifier {
             }
         }
     }
-
-    @Override
-    protected Measurement[] getModelMeasurementsImpl() { return null; }
-
-    @Override
-    public void getModelDescription(StringBuilder out, int indent) { }
 }

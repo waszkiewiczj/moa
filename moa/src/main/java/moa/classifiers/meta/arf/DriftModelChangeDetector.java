@@ -25,6 +25,10 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
 
     @Override
     public void update(EnsembleWrapper ensemble) {
+        if (observers == null) {
+            init(ensemble);
+        }
+
         for(EnsembleModelWrapper ensembleModel: ensemble.ensemble) {
             observers.get(ensembleModel.index).update(ensembleModel);
         }
@@ -32,6 +36,10 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
 
     @Override
     public List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble) {
+        if (observers == null) {
+            init(ensemble);
+        }
+
         ArrayList<EnsembleModelWrapper> modelsToUpdate = new ArrayList<>();
 
         for(EnsembleModelWrapper ensembleModel: ensemble.ensemble) {
@@ -46,6 +54,10 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
 
     @Override
     public List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble)  {
+        if (observers == null) {
+            init(ensemble);
+        }
+
         ArrayList<EnsembleModelWrapper> modelsToPush = new ArrayList<>();
 
         for(EnsembleModelWrapper ensembleModel: ensemble.ensemble) {

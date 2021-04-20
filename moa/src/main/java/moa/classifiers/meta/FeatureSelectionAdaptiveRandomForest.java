@@ -141,7 +141,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         double lambda = lambdaOption.getValue();
         boolean weightedVote = !disableWeightedVote.isSet();
 
-        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda, weightedVote);
+        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda, weightedVote, this.classifierRandom);
     }
 
     private int getSubspaceSize(Instance inst) {
