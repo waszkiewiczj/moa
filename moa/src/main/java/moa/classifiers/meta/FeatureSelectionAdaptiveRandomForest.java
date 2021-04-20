@@ -1,5 +1,6 @@
 package moa.classifiers.meta;
 
+import com.github.javacliparser.FlagOption;
 import com.github.javacliparser.FloatOption;
 import com.github.javacliparser.IntOption;
 import com.github.javacliparser.MultiChoiceOption;
@@ -9,12 +10,12 @@ import moa.capabilities.Capability;
 import moa.capabilities.ImmutableCapabilities;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.MultiClassClassifier;
-import moa.classifiers.meta.arf.EnsembleWrapper;
-import moa.classifiers.meta.arf.FeatureSelector;
-import moa.classifiers.meta.arf.ModelChangeDetector;
+import moa.classifiers.meta.arf.*;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.options.ClassOption;
+
+import java.util.List;
 
 
 public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier implements MultiClassClassifier, CapabilitiesHandler {
@@ -44,12 +45,21 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     public ClassOption featureSelectionMethodOption = new ClassOption("featureSelectionMethod", 'f',
             "Change method of preliminary feature selection", FeatureSelector.class, "AllFeatureSelector");
 
+    public ClassOption backgroundLearnerProviderOption = new ClassOption("backgroundLearnerProvider", 'b',
+            "Change way of managing background learners", BackgroundLearnerProvider.class, "IndividualBackgroundLearnerProvider");
+
+    public FlagOption disableWeightedVote = new FlagOption("disableWeightedVote", 'w',
+            "Should use weighted voting?");
+
     protected static final int FEATURES_M = 0;
     protected static final int FEATURES_SQRT = 1;
     protected static final int FEATURES_SQRT_INV = 2;
     protected static final int FEATURES_PERCENT = 3;
 
     private EnsembleWrapper learner;
+    private FeatureSelector featureSelector;
+    private ModelChangeDetector modelChangeDetector;
+    private BackgroundLearnerProvider backgroundLearnerProvider;
 
     @Override
     public String getPurposeString() {
@@ -67,7 +77,15 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     @Override
     public void resetLearningImpl() {
         if (learner != null) {
-            learner.resetLearning();
+            learner.resetLearningImpl();
+        }
+
+        if (featureSelector != null) {
+           featureSelector.resetLearning();
+        }
+
+        if (modelChangeDetector != null) {
+            modelChangeDetector.resetLearning();
         }
     }
 
@@ -77,6 +95,24 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
             initEnsemble(inst);
         }
         learner.trainOnInstanceImpl(inst);
+
+        if (featureSelector == null) {
+            featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
+        }
+        featureSelector.trainOnInstance(inst);
+
+        if (modelChangeDetector == null) {
+            modelChangeDetector = (ModelChangeDetector) getPreparedClassOption(modelChangeDetectorOption);
+        }
+        modelChangeDetector.update(learner);
+        List<EnsembleModelWrapper> modelsToUpdate = modelChangeDetector.getModelsToUpdate(learner);
+        List<EnsembleModelWrapper> modelsToPush = modelChangeDetector.getModelsToPush(learner);
+
+        if (backgroundLearnerProvider == null) {
+            backgroundLearnerProvider = (BackgroundLearnerProvider) getPreparedClassOption(backgroundLearnerProviderOption);
+        }
+        modelsToUpdate.forEach(model -> backgroundLearnerProvider.updateLearner(model));
+        modelsToPush.forEach(model -> backgroundLearnerProvider.pushLearner(model, featureSelector));
     }
 
     @Override
@@ -103,8 +139,9 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         int ensembleSize = ensembleSizeOption.getValue();
         int subspaceSize = getSubspaceSize(inst);
         double lambda = lambdaOption.getValue();
+        boolean weightedVote = !disableWeightedVote.isSet();
 
-        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda);
+        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda, weightedVote);
     }
 
     private int getSubspaceSize(Instance inst) {
