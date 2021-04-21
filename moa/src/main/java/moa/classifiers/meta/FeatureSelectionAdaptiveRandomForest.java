@@ -13,6 +13,7 @@ import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.meta.arf.*;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
+import moa.evaluation.BasicClassificationPerformanceEvaluator;
 import moa.options.ClassOption;
 
 import java.util.List;
@@ -141,7 +142,8 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         double lambda = lambdaOption.getValue();
         boolean weightedVote = !disableWeightedVote.isSet();
 
-        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda, weightedVote, this.classifierRandom);
+        learner = new EnsembleWrapper(treeLearner, ensembleSize, subspaceSize, lambda, weightedVote,
+                new BasicClassificationPerformanceEvaluator(), this.classifierRandom);
     }
 
     private int getSubspaceSize(Instance inst) {

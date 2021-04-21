@@ -1,12 +1,10 @@
 package moa.classifiers.meta.arf;
 
 import com.yahoo.labs.samoa.instances.Instance;
-import moa.classifiers.AbstractClassifier;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.DoubleVector;
-import moa.core.Measurement;
 import moa.core.MiscUtils;
-import moa.evaluation.BasicClassificationPerformanceEvaluator;
+import moa.evaluation.ClassificationPerformanceEvaluator;
 
 import java.util.Random;
 
@@ -15,24 +13,24 @@ public class EnsembleWrapper {
     public final EnsembleModelWrapper[] ensemble;
     public final int ensembleSize;
 
-    protected final ARFHoeffdingTree baseTree;
-    protected final int subspaceSize;
     protected final double lambda;
     protected final boolean weightedVote;
 
     private final Random classifierRandom;
 
-    public EnsembleWrapper(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda, boolean weightedVote, Random classifierRandom) {
-        this.baseTree = baseTree;
+    public EnsembleWrapper(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda,
+                           boolean weightedVote, ClassificationPerformanceEvaluator baseEvaluator,
+                           Random classifierRandom) {
         baseTree.resetLearning();
         this.ensembleSize = ensembleSize;
-        this.subspaceSize = subspaceSize;
         this.lambda = lambda;
         this.weightedVote = weightedVote;
         this.classifierRandom = classifierRandom;
         this.ensemble = new EnsembleModelWrapper[this.ensembleSize];
         for (int i = 0; i < this.ensembleSize; i++) {
-            ensemble[i] = new EnsembleModelWrapper(i, (ARFHoeffdingTree) baseTree.copy(), new BasicClassificationPerformanceEvaluator());
+            ARFHoeffdingTree tree = (ARFHoeffdingTree) baseTree.copy();
+            tree.subspaceSizeOption.setValue(subspaceSize);
+            ensemble[i] = new EnsembleModelWrapper(i, tree, (ClassificationPerformanceEvaluator) baseEvaluator.copy());
         }
     }
 
