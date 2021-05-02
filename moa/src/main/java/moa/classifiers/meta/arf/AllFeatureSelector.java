@@ -1,8 +1,6 @@
 package moa.classifiers.meta.arf;
 
 import com.yahoo.labs.samoa.instances.Instance;
-import moa.core.ObjectRepository;
-import moa.tasks.TaskMonitor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,10 +19,10 @@ public class AllFeatureSelector extends AbstractFeatureSelector {
 
     @Override
     public void trainOnInstance(Instance inst) {
-        int instanceFeatures = inst.numInputAttributes();
-        if (instanceFeatures != allFeatures.size()) {
+        super.trainOnInstance(inst);
+        if (numberOfFeatures != allFeatures.size()) {
             allFeatures.clear();
-            allFeatures.addAll(IntStream.range(0, instanceFeatures).boxed().collect(Collectors.toList()));
+            allFeatures.addAll(IntStream.range(0, numberOfFeatures).boxed().collect(Collectors.toList()));
         }
     }
 
@@ -37,10 +35,4 @@ public class AllFeatureSelector extends AbstractFeatureSelector {
     public void resetLearning() {
         allFeatures.clear();
     }
-
-    @Override
-    public void getDescription(StringBuilder sb, int indent) { }
-
-    @Override
-    protected void prepareForUseImpl(TaskMonitor monitor, ObjectRepository repository) { }
 }
