@@ -37,7 +37,7 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
     }
 
     @Override
-    public void pushLearner(EnsembleModelWrapper model, FeatureSelector featureSelector) {
+    public void pushLearner(EnsembleModelWrapper model) {
         ARFHoeffdingTree treeCopy = model.getModel();
         treeCopy.resetLearning();
 

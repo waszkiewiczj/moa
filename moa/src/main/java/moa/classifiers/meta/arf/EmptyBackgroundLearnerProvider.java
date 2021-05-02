@@ -18,7 +18,7 @@ public class EmptyBackgroundLearnerProvider extends AbstractBackgroundLearnerPro
     public void updateLearner(EnsembleModelWrapper model) { }
 
     @Override
-    public void pushLearner(EnsembleModelWrapper model, FeatureSelector featureSelector) { }
+    public void pushLearner(EnsembleModelWrapper model) { }
 
     @Override
     public void resetLearning() { }
