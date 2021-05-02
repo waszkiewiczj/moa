@@ -13,9 +13,8 @@ public class EnsembleWrapper {
     public final EnsembleModelWrapper[] ensemble;
     public final int ensembleSize;
 
-    protected final double lambda;
-    protected final boolean weightedVote;
-
+    private final double lambda;
+    private final boolean weightedVote;
     private final Random classifierRandom;
 
     public EnsembleWrapper(ARFHoeffdingTree baseTree, int ensembleSize, int subspaceSize, double lambda,
@@ -55,13 +54,13 @@ public class EnsembleWrapper {
         return combinedVote.getArrayRef();
     }
 
-    public void resetLearningImpl() {
+    public void resetLearning() {
         for(EnsembleModelWrapper ensembleModel: ensemble) {
             ensembleModel.resetLearning();
         }
     }
 
-    public void trainOnInstanceImpl(Instance inst) {
+    public void trainOnInstance(Instance inst) {
         for(EnsembleModelWrapper ensembleModel: ensemble) {
             int k = MiscUtils.poisson(lambda, this.classifierRandom);
             if (k > 0) {

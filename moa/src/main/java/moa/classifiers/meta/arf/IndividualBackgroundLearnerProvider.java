@@ -12,7 +12,7 @@ import java.util.Hashtable;
 
 public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearnerProvider {
 
-    private Dictionary<Integer, EnsembleModelWrapper> backgroundModels = new Hashtable<>();
+    private final Dictionary<Integer, EnsembleModelWrapper> backgroundModels = new Hashtable<>();
 
     @Override
     public String getPurposeString() {
@@ -29,14 +29,19 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
     }
 
     @Override
-    public void updateLearner(EnsembleModelWrapper model) { }
+    public void updateLearner(EnsembleModelWrapper model) {
+        EnsembleModelWrapper backgroundModel = backgroundModels.get(model.index);
+        if (backgroundModel != null) {
+            model.resetLearning(backgroundModel.getModel());
+        }
+    }
 
     @Override
     public void pushLearner(EnsembleModelWrapper model, FeatureSelector featureSelector) {
-        ARFHoeffdingTree treeCopy = (ARFHoeffdingTree) model.model.copy();
+        ARFHoeffdingTree treeCopy = model.getModel();
         treeCopy.resetLearning();
 
-        ClassificationPerformanceEvaluator evaluatorCopy = (ClassificationPerformanceEvaluator) model.evaluator.copy();
+        ClassificationPerformanceEvaluator evaluatorCopy = model.getEvaluator();
         evaluatorCopy.reset();
 
         EnsembleModelWrapper backgroundModel = new EnsembleModelWrapper(

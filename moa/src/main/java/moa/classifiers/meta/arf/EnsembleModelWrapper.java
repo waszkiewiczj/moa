@@ -10,8 +10,8 @@ public class EnsembleModelWrapper {
     public final int index;
     public boolean correctlyClassifies;
 
-    protected final ClassificationPerformanceEvaluator evaluator;
-    protected ARFHoeffdingTree model;
+    private final ClassificationPerformanceEvaluator evaluator;
+    private ARFHoeffdingTree model;
 
     public EnsembleModelWrapper(int index, ARFHoeffdingTree model, ClassificationPerformanceEvaluator evaluator) {
         this.index = index;
@@ -49,5 +49,13 @@ public class EnsembleModelWrapper {
     public void resetLearning(ARFHoeffdingTree newModel) {
         model = newModel;
         evaluator.reset();
+    }
+
+    public ARFHoeffdingTree getModel() {
+        return (ARFHoeffdingTree) model.copy();
+    }
+
+    public ClassificationPerformanceEvaluator getEvaluator() {
+        return (ClassificationPerformanceEvaluator) evaluator.copy();
     }
 }

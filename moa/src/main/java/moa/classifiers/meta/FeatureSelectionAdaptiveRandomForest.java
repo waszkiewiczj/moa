@@ -57,10 +57,10 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     protected static final int FEATURES_SQRT_INV = 2;
     protected static final int FEATURES_PERCENT = 3;
 
-    private EnsembleWrapper learner;
-    private FeatureSelector featureSelector;
-    private ModelChangeDetector modelChangeDetector;
-    private BackgroundLearnerProvider backgroundLearnerProvider;
+    protected EnsembleWrapper learner;
+    protected FeatureSelector featureSelector;
+    protected ModelChangeDetector modelChangeDetector;
+    protected BackgroundLearnerProvider backgroundLearnerProvider;
 
     @Override
     public String getPurposeString() {
@@ -78,7 +78,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     @Override
     public void resetLearningImpl() {
         if (learner != null) {
-            learner.resetLearningImpl();
+            learner.resetLearning();
         }
 
         if (featureSelector != null) {
@@ -95,7 +95,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
         if (learner == null) {
             initEnsemble(inst);
         }
-        learner.trainOnInstanceImpl(inst);
+        learner.trainOnInstance(inst);
 
         if (featureSelector == null) {
             featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
