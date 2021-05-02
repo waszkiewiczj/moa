@@ -1,16 +1,19 @@
 package moa.classifiers.meta.arf;
 
+import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
 import moa.options.OptionHandler;
 
 import java.util.List;
 
 public interface ModelChangeDetector extends OptionHandler {
 
-    void update(EnsembleWrapper ensemble);
+    void init(FeatureSelectionAdaptiveRandomForest forest);
 
-    List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble);
+    void update();
 
-    List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble);
+    List<EnsembleModelWrapper> getModelsToUpdate();
+
+    List<EnsembleModelWrapper> getModelsToPush();
 
     void resetLearning();
 }

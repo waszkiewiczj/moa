@@ -24,9 +24,10 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
 
 
     @Override
-    public void update(EnsembleWrapper ensemble) {
+    public void update() {
+        EnsembleWrapper ensemble = this.forest.learner;
         if (observers == null) {
-            init(ensemble);
+            initDetectors(ensemble);
         }
 
         for(EnsembleModelWrapper ensembleModel: ensemble.ensemble) {
@@ -35,9 +36,11 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
     }
 
     @Override
-    public List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble) {
+    public List<EnsembleModelWrapper> getModelsToUpdate() {
+        EnsembleWrapper ensemble = this.forest.learner;
+
         if (observers == null) {
-            init(ensemble);
+            initDetectors(ensemble);
         }
 
         ArrayList<EnsembleModelWrapper> modelsToUpdate = new ArrayList<>();
@@ -53,9 +56,11 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
     }
 
     @Override
-    public List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble)  {
+    public List<EnsembleModelWrapper> getModelsToPush()  {
+        EnsembleWrapper ensemble = this.forest.learner;
+
         if (observers == null) {
-            init(ensemble);
+            initDetectors(ensemble);
         }
 
         ArrayList<EnsembleModelWrapper> modelsToPush = new ArrayList<>();
@@ -86,7 +91,7 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
     @Override
     protected void prepareForUseImpl(TaskMonitor monitor, ObjectRepository repository) { }
 
-    protected void init(EnsembleWrapper ensemble) {
+    protected void initDetectors(EnsembleWrapper ensemble) {
         int size = ensemble.ensembleSize;
         observers = new Hashtable<>(size);
 

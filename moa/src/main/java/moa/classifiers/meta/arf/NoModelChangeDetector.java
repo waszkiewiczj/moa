@@ -14,13 +14,13 @@ public class NoModelChangeDetector extends AbstractModelChangeDetector {
     }
 
     @Override
-    public void update(EnsembleWrapper ensemble) { }
+    public void update() { }
 
     @Override
-    public List<EnsembleModelWrapper> getModelsToUpdate(EnsembleWrapper ensemble) { return new ArrayList<>(); }
+    public List<EnsembleModelWrapper> getModelsToUpdate() { return new ArrayList<>(); }
 
     @Override
-    public List<EnsembleModelWrapper> getModelsToPush(EnsembleWrapper ensemble)  { return new ArrayList<>(); }
+    public List<EnsembleModelWrapper> getModelsToPush()  { return new ArrayList<>(); }
 
     @Override
     public void resetLearning() { }

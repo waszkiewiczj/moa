@@ -52,15 +52,15 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
     public FlagOption disableWeightedVote = new FlagOption("disableWeightedVote", 'w',
             "Should use weighted voting?");
 
+    public EnsembleWrapper learner;
+    protected FeatureSelector featureSelector;
+    protected ModelChangeDetector modelChangeDetector;
+    protected BackgroundLearnerProvider backgroundLearnerProvider;
+
     protected static final int FEATURES_M = 0;
     protected static final int FEATURES_SQRT = 1;
     protected static final int FEATURES_SQRT_INV = 2;
     protected static final int FEATURES_PERCENT = 3;
-
-    protected EnsembleWrapper learner;
-    protected FeatureSelector featureSelector;
-    protected ModelChangeDetector modelChangeDetector;
-    protected BackgroundLearnerProvider backgroundLearnerProvider;
 
     @Override
     public String getPurposeString() {
@@ -104,10 +104,11 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
 
         if (modelChangeDetector == null) {
             modelChangeDetector = (ModelChangeDetector) getPreparedClassOption(modelChangeDetectorOption);
+            modelChangeDetector.init(this);
         }
-        modelChangeDetector.update(learner);
-        List<EnsembleModelWrapper> modelsToUpdate = modelChangeDetector.getModelsToUpdate(learner);
-        List<EnsembleModelWrapper> modelsToPush = modelChangeDetector.getModelsToPush(learner);
+        modelChangeDetector.update();
+        List<EnsembleModelWrapper> modelsToUpdate = modelChangeDetector.getModelsToUpdate();
+        List<EnsembleModelWrapper> modelsToPush = modelChangeDetector.getModelsToPush();
 
         if (backgroundLearnerProvider == null) {
             backgroundLearnerProvider = (BackgroundLearnerProvider) getPreparedClassOption(backgroundLearnerProviderOption);
