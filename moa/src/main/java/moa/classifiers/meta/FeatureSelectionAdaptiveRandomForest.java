@@ -99,6 +99,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
 
         if (featureSelector == null) {
             featureSelector = (FeatureSelector) getPreparedClassOption(featureSelectionMethodOption);
+            featureSelector.init(this);
         }
         featureSelector.trainOnInstance(inst);
 
