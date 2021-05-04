@@ -1,13 +1,10 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.fs;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
 import moa.core.ObjectRepository;
 import moa.options.AbstractOptionHandler;
 import moa.tasks.TaskMonitor;
-
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public abstract class AbstractFeatureSelector extends AbstractOptionHandler
         implements FeatureSelector {

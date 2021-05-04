@@ -1,4 +1,4 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.fs;
 
 import com.github.javacliparser.IntOption;
 import com.yahoo.labs.samoa.instances.Instance;

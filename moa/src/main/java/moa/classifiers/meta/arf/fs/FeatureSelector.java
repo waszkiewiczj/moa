@@ -1,4 +1,4 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.fs;
 
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
