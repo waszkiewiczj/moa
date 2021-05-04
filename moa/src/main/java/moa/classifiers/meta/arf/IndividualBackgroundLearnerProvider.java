@@ -9,6 +9,7 @@ import moa.tasks.TaskMonitor;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Optional;
 
 public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearnerProvider {
 
@@ -37,6 +38,12 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
     }
 
     @Override
+    public Optional<EnsembleModelWrapper> getLearner(EnsembleModelWrapper model) {
+        EnsembleModelWrapper backgroundModel = backgroundModels.get(model.index);
+        return backgroundModel != null ? Optional.of(backgroundModel) : Optional.empty();
+    }
+
+    @Override
     public void pushLearner(EnsembleModelWrapper model) {
         ARFHoeffdingTree treeCopy = model.getModel();
         treeCopy.resetLearning();
@@ -60,11 +67,4 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
             modelsEnumeration.nextElement().resetLearning();
         }
     }
-
-    @Override
-    public void getDescription(StringBuilder sb, int indent) { }
-
-    @Override
-    protected void prepareForUseImpl(TaskMonitor monitor, ObjectRepository repository) { }
-
 }

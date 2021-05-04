@@ -4,6 +4,8 @@ import com.yahoo.labs.samoa.instances.Instance;
 import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
 import moa.options.OptionHandler;
 
+import java.util.Optional;
+
 public interface BackgroundLearnerProvider extends OptionHandler {
 
     void init(FeatureSelectionAdaptiveRandomForest forest);
@@ -11,6 +13,8 @@ public interface BackgroundLearnerProvider extends OptionHandler {
     void trainOnInstance(Instance inst);
 
     void updateLearner(EnsembleModelWrapper model);
+
+    Optional<EnsembleModelWrapper> getLearner(EnsembleModelWrapper model);
 
     void pushLearner(EnsembleModelWrapper model);
 
