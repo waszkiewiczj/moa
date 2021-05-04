@@ -11,6 +11,7 @@ import moa.capabilities.ImmutableCapabilities;
 import moa.classifiers.AbstractClassifier;
 import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.meta.arf.*;
+import moa.classifiers.meta.arf.blp.BackgroundLearnerProvider;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.evaluation.BasicClassificationPerformanceEvaluator;

@@ -1,10 +1,9 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.blp;
 
 import com.yahoo.labs.samoa.instances.Instance;
+import moa.classifiers.meta.arf.EnsembleModelWrapper;
 import moa.classifiers.trees.ARFHoeffdingTree;
-import moa.core.ObjectRepository;
 import moa.evaluation.ClassificationPerformanceEvaluator;
-import moa.tasks.TaskMonitor;
 
 import java.util.Dictionary;
 import java.util.Enumeration;
