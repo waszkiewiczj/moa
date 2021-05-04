@@ -1,6 +1,8 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.mcd;
 
 import moa.classifiers.core.driftdetection.ChangeDetector;
+import moa.classifiers.meta.arf.EnsembleModelWrapper;
+import moa.classifiers.meta.arf.EnsembleWrapper;
 import moa.core.ObjectRepository;
 import moa.options.ClassOption;
 import moa.tasks.TaskMonitor;

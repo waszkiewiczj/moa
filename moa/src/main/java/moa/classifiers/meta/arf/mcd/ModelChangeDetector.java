@@ -1,6 +1,7 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.mcd;
 
 import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
+import moa.classifiers.meta.arf.EnsembleModelWrapper;
 import moa.options.OptionHandler;
 
 import java.util.List;

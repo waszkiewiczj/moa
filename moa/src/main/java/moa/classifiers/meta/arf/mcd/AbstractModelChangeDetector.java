@@ -1,4 +1,4 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.mcd;
 
 import moa.classifiers.meta.FeatureSelectionAdaptiveRandomForest;
 import moa.options.AbstractOptionHandler;

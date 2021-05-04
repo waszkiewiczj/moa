@@ -13,6 +13,7 @@ import moa.classifiers.MultiClassClassifier;
 import moa.classifiers.meta.arf.*;
 import moa.classifiers.meta.arf.blp.BackgroundLearnerProvider;
 import moa.classifiers.meta.arf.fs.FeatureSelector;
+import moa.classifiers.meta.arf.mcd.ModelChangeDetector;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.core.Measurement;
 import moa.evaluation.BasicClassificationPerformanceEvaluator;

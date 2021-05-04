@@ -1,5 +1,6 @@
-package moa.classifiers.meta.arf;
+package moa.classifiers.meta.arf.mcd;
 
+import moa.classifiers.meta.arf.EnsembleModelWrapper;
 import moa.core.ObjectRepository;
 import moa.tasks.TaskMonitor;
 
