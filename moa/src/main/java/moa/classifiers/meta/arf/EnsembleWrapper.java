@@ -29,7 +29,7 @@ public class EnsembleWrapper {
         for (int i = 0; i < this.ensembleSize; i++) {
             ARFHoeffdingTree tree = (ARFHoeffdingTree) baseTree.copy();
             tree.subspaceSizeOption.setValue(subspaceSize);
-            ensemble[i] = new EnsembleModelWrapper(i, tree, (ClassificationPerformanceEvaluator) baseEvaluator.copy());
+            ensemble[i] = new EnsembleModelWrapper(i, tree, null, (ClassificationPerformanceEvaluator) baseEvaluator.copy());
         }
     }
 

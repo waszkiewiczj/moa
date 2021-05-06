@@ -5,10 +5,7 @@ import moa.classifiers.meta.arf.EnsembleModelWrapper;
 import moa.classifiers.trees.ARFHoeffdingTree;
 import moa.evaluation.ClassificationPerformanceEvaluator;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Optional;
+import java.util.*;
 
 public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearnerProvider {
 
@@ -50,11 +47,14 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
         ClassificationPerformanceEvaluator evaluatorCopy = model.getEvaluator();
         evaluatorCopy.reset();
 
+        Set<Integer> features = forest.featureSelector.getFeatureIndexes();
         EnsembleModelWrapper backgroundModel = new EnsembleModelWrapper(
                 model.index,
                 treeCopy,
+                features,
                 evaluatorCopy
         );
+
         backgroundModels.put(model.index, backgroundModel);
     }
 

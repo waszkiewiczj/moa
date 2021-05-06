@@ -56,7 +56,7 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
             "Should use weighted voting?");
 
     public EnsembleWrapper learner;
-    protected FeatureSelector featureSelector;
+    public FeatureSelector featureSelector;
     protected ModelChangeDetector modelChangeDetector;
     protected BackgroundLearnerProvider backgroundLearnerProvider;
 
