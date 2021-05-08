@@ -17,6 +17,10 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
 
     private final List<Instance> slidingWindow = new LinkedList<>();
 
+    private boolean isCacheUpToDate = false;
+
+    private Set<Integer> featureIndicesCache;
+
     @Override
     public String getPurposeString() {
         return "Selects features according to concept proposed by Breiman. "
@@ -26,14 +30,26 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
 
     @Override
     public void trainOnInstance(Instance inst) {
+        super.trainOnInstance(inst);
         slidingWindow.add(inst);
         if (slidingWindow.size() == slidingWindowSize.getValue() + slidingWindowStep.getValue()) {
             slidingWindow.subList(0, slidingWindowStep.getValue()).clear();
         }
+        isCacheUpToDate = false;
     }
 
     @Override
     public Set<Integer> getFeatureIndexes() {
+        if (!isCacheUpToDate) {
+            updateCache();
+        }
+        return featureIndicesCache;
+    }
+
+    @Override
+    public void resetLearning() { }
+
+    private void updateCache() {
         Set<Integer> relevantFeatures = new HashSet<>(numberOfFeatures);
 
         for (int i = 0; i < numberOfFeatures; i++) {
@@ -47,11 +63,9 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
                 relevantFeatures.add(i);
             }
         }
-        return relevantFeatures;
+        featureIndicesCache = relevantFeatures;
+        isCacheUpToDate = true;
     }
-
-    @Override
-    public void resetLearning() { }
 
     private double getAccuracy(List<Instance> instances) {
         OptionalDouble avg = instances.stream().mapToInt(inst -> forest.correctlyClassifies(inst) ? 1 : 0).average();
