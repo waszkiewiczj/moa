@@ -25,9 +25,11 @@ public class EnsembleModelWrapper {
         this.model = model;
         this.evaluator = evaluator;
         this.selectedFeatureIndices = selectedFeatureIndices;
-        int numOfSelectedFeatures = selectedFeatureIndices.size();
-        if (model.subspaceSizeOption.getValue() > numOfSelectedFeatures) {
-            model.subspaceSizeOption.setValue(numOfSelectedFeatures);
+        if (selectedFeatureIndices != null) {
+            int numOfSelectedFeatures = selectedFeatureIndices.size();
+            if (model.subspaceSizeOption.getValue() > numOfSelectedFeatures) {
+                model.subspaceSizeOption.setValue(numOfSelectedFeatures);
+            }
         }
     }
 
