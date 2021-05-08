@@ -11,18 +11,20 @@ import java.util.Set;
 
 public class PeriodicModelChangeDetector extends AbstractModelChangeDetector {
 
-    private final List<Tuple<Integer, PeriodCounter>> periodCounters = new LinkedList<>();
-    public IntOption pushPeriodLengthOption = new IntOption("pushPeriodLength", 'p',
+    public IntOption pushFrequencyOption = new IntOption("pushFrequency", 'p',
             "Period length between push detection", 1000, 1, Integer.MAX_VALUE);
-    public IntOption updatePeriodLengthOption = new IntOption("updatePeriodLength", 'u',
+
+    public IntOption updateFrequencyOption = new IntOption("updateFrequency", 'u',
             "Period length between update detection", 1000, 1, Integer.MAX_VALUE);
+
+    private final List<Tuple<Integer, PeriodCounter>> periodCounters = new LinkedList<>();
 
     @Override
     public String getPurposeString() {
-        return "Periodically forces ensemble to update learners." +
-                "For each tree in ensemble, after specified amount of instances," +
-                "method marks tree to push new background learner." +
-                "After push, tree is marked as to be updated after specified period.";
+        return "Periodically forces ensemble to update learners. " +
+                "For each tree in ensemble, after specified amount of instances, " +
+                "method marks tree to push new background learner. " +
+                "After push tree is marked as to be updated when specified amount of instances occur.";
     }
 
     @Override
@@ -78,11 +80,11 @@ public class PeriodicModelChangeDetector extends AbstractModelChangeDetector {
     }
 
     private void initPeriodCounters() {
-        int updatePeriodLength = updatePeriodLengthOption.getValue();
-        int pushPeriodLength = pushPeriodLengthOption.getValue();
+        int updateFrequency = updateFrequencyOption.getValue();
+        int pushFrequency = pushFrequencyOption.getValue();
 
         for (EnsembleModelWrapper model : forest.learner.ensemble) {
-            periodCounters.add(new Tuple<>(model.index, new PeriodCounter(updatePeriodLength, pushPeriodLength)));
+            periodCounters.add(new Tuple<>(model.index, new PeriodCounter(updateFrequency, pushFrequency)));
         }
     }
 
