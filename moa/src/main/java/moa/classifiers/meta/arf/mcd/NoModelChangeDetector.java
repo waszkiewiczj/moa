@@ -25,10 +25,4 @@ public class NoModelChangeDetector extends AbstractModelChangeDetector {
 
     @Override
     public void resetLearning() { }
-
-    @Override
-    public void getDescription(StringBuilder sb, int indent) { }
-
-    @Override
-    protected void prepareForUseImpl(TaskMonitor monitor, ObjectRepository repository) { }
 }

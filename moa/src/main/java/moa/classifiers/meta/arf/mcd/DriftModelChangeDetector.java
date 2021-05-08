@@ -3,9 +3,7 @@ package moa.classifiers.meta.arf.mcd;
 import moa.classifiers.core.driftdetection.ChangeDetector;
 import moa.classifiers.meta.arf.EnsembleModelWrapper;
 import moa.classifiers.meta.arf.EnsembleWrapper;
-import moa.core.ObjectRepository;
 import moa.options.ClassOption;
-import moa.tasks.TaskMonitor;
 
 import java.util.*;
 
@@ -87,12 +85,6 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
         }
     }
 
-    @Override
-    public void getDescription(StringBuilder sb, int indent) { }
-
-    @Override
-    protected void prepareForUseImpl(TaskMonitor monitor, ObjectRepository repository) { }
-
     protected void initDetectors(EnsembleWrapper ensemble) {
         int size = ensemble.ensembleSize;
         observers = new Hashtable<>(size);
@@ -106,41 +98,41 @@ public class DriftModelChangeDetector extends AbstractModelChangeDetector{
         }
 
     }
-}
 
-class DriftModelObserver {
+    private static class DriftModelObserver {
 
-    private final ChangeDetector driftDetector;
-    private final ChangeDetector warningDetector;
-    private boolean driftOccured = false;
-    private boolean warningOccured = false;
+        private final ChangeDetector driftDetector;
+        private final ChangeDetector warningDetector;
+        private boolean driftOccured = false;
+        private boolean warningOccured = false;
 
-    public DriftModelObserver(ChangeDetector driftDetector, ChangeDetector warningDetector) {
-        this.driftDetector = driftDetector;
-        this.warningDetector = warningDetector;
-    }
+        public DriftModelObserver(ChangeDetector driftDetector, ChangeDetector warningDetector) {
+            this.driftDetector = driftDetector;
+            this.warningDetector = warningDetector;
+        }
 
-    public void update(EnsembleModelWrapper model) {
-        double input = model.correctlyClassifies ? 0 : 1;
+        public void update(EnsembleModelWrapper model) {
+            double input = model.correctlyClassifies ? 0 : 1;
 
-        driftDetector.input(input);
-        warningDetector.input(input);
+            driftDetector.input(input);
+            warningDetector.input(input);
 
-        driftOccured = driftDetector.getChange();
-        warningOccured = warningDetector.getChange();
+            driftOccured = driftDetector.getChange();
+            warningOccured = warningDetector.getChange();
 
-        if(driftOccured) {
+            if(driftOccured) {
+                driftDetector.resetLearning();
+                warningDetector.resetLearning();
+            }
+        }
+
+        public boolean driftOccured() { return driftOccured; }
+
+        public boolean warningOccured() { return warningOccured; }
+
+        public void resetLearning() {
             driftDetector.resetLearning();
             warningDetector.resetLearning();
         }
-    }
-
-    public boolean driftOccured() { return driftOccured; }
-
-    public boolean warningOccured() { return warningOccured; }
-
-    public void resetLearning() {
-        driftDetector.resetLearning();
-        warningDetector.resetLearning();
     }
 }
