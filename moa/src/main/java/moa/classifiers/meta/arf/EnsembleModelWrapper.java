@@ -67,8 +67,10 @@ public class EnsembleModelWrapper {
         evaluator.reset();
     }
 
-    public void resetLearning(ARFHoeffdingTree newModel) {
-        model = newModel;
+    public void resetLearning(EnsembleModelWrapper newModelWrapper) {
+        model = newModelWrapper.getModel();
+        selectedFeatureIndices = newModelWrapper.selectedFeatureIndices;
+        lastReplacedOn = instancesSeen;
         evaluator.reset();
     }
 

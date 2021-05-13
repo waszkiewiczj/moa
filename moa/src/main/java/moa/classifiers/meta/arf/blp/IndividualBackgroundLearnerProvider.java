@@ -29,7 +29,7 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
     public void updateLearner(EnsembleModelWrapper model) {
         EnsembleModelWrapper backgroundModel = backgroundModels.get(model.index);
         if (backgroundModel != null) {
-            model.resetLearning(backgroundModel.getModel());
+            model.resetLearning(backgroundModel);
         }
     }
 
