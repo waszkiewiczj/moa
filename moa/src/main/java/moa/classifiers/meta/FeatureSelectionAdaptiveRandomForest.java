@@ -118,6 +118,8 @@ public class FeatureSelectionAdaptiveRandomForest extends AbstractClassifier imp
             backgroundLearnerProvider = (BackgroundLearnerProvider) getPreparedClassOption(backgroundLearnerProviderOption);
             backgroundLearnerProvider.init(this);
         }
+        backgroundLearnerProvider.trainOnInstance(inst);
+
         modelsToUpdate.forEach(model -> backgroundLearnerProvider.updateLearner(model));
         modelsToPush.forEach(model -> backgroundLearnerProvider.pushLearner(model));
     }
