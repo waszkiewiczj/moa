@@ -20,6 +20,9 @@ public class EnsembleModelWrapper {
     private final ClassificationPerformanceEvaluator evaluator;
     private ARFHoeffdingTree model;
 
+    private int instancesSeen = 0;
+    private int lastReplacedOn = 0;
+
     public EnsembleModelWrapper(int index, ARFHoeffdingTree model, Set<Integer> selectedFeatureIndices, ClassificationPerformanceEvaluator evaluator) {
         this.index = index;
         this.model = model;
@@ -34,6 +37,8 @@ public class EnsembleModelWrapper {
     }
 
     public void trainOnInstance(Instance inst, double weight) {
+        instancesSeen++;
+
         inst = SelectFeatures(inst);
         DoubleVector vote = new DoubleVector(model.getVotesForInstance(inst));
 
