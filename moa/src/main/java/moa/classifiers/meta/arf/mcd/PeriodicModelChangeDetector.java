@@ -104,7 +104,7 @@ public class PeriodicModelChangeDetector extends AbstractModelChangeDetector {
 
         public void update() {
             if (readyToUpdate) {
-                updatePeriodCount = pushPeriodCount = 0;
+                reset();
             }
 
             pushPeriodCount++;
