@@ -2,6 +2,7 @@ package moa.classifiers.meta.arf.fs;
 
 import com.github.javacliparser.IntOption;
 import com.yahoo.labs.samoa.instances.Instance;
+import moa.classifiers.Classifier;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,7 +42,8 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
     @Override
     protected Set<Integer> getFeatureIndicesImpl() {
         if (!isCacheUpToDate) {
-            updateCache();
+            Classifier classifier = getEvaluationClassifier();
+            updateCache(classifier);
         }
         return featureIndicesCache;
     }
@@ -49,14 +51,18 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
     @Override
     public void resetLearning() { }
 
-    private void updateCache() {
+    protected Classifier getEvaluationClassifier() {
+        return this.forest;
+    }
+
+    private void updateCache(Classifier classifier) {
         Set<Integer> relevantFeatures = new HashSet<>(numberOfFeatures);
 
         for (int i = 0; i < numberOfFeatures; i++) {
-            double baseAccuracy = getAccuracy(slidingWindow);
+            double baseAccuracy = getAccuracy(slidingWindow, classifier);
 
             List<Instance> shuffledWindow = getShuffledWindow(i);
-            double shuffledAccuracy = getAccuracy(shuffledWindow);
+            double shuffledAccuracy = getAccuracy(shuffledWindow, classifier);
 
             // relevant if accuracy decreased after shuffle
             if (shuffledAccuracy < baseAccuracy) {
@@ -67,8 +73,8 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
         isCacheUpToDate = true;
     }
 
-    private double getAccuracy(List<Instance> instances) {
-        OptionalDouble avg = instances.stream().mapToInt(inst -> forest.correctlyClassifies(inst) ? 1 : 0).average();
+    private double getAccuracy(List<Instance> instances, Classifier classifier) {
+        OptionalDouble avg = instances.stream().mapToInt(inst -> classifier.correctlyClassifies(inst) ? 1 : 0).average();
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
 
