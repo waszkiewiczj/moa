@@ -27,7 +27,7 @@ public class AllFeatureSelector extends AbstractFeatureSelector {
     }
 
     @Override
-    public Set<Integer> getFeatureIndexes() {
+    protected Set<Integer> getFeatureIndicesImpl() {
         return allFeatures;
     }
 

@@ -47,7 +47,7 @@ public class IndividualBackgroundLearnerProvider extends AbstractBackgroundLearn
         ClassificationPerformanceEvaluator evaluatorCopy = model.getEvaluator();
         evaluatorCopy.reset();
 
-        Set<Integer> features = forest.featureSelector.getFeatureIndexes();
+        Set<Integer> features = forest.featureSelector.getFeatureIndices();
         EnsembleModelWrapper backgroundModel = new EnsembleModelWrapper(
                 model.index,
                 treeCopy,

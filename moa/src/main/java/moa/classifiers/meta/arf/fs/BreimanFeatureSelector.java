@@ -39,7 +39,7 @@ public class BreimanFeatureSelector extends AbstractFeatureSelector {
     }
 
     @Override
-    public Set<Integer> getFeatureIndexes() {
+    protected Set<Integer> getFeatureIndicesImpl() {
         if (!isCacheUpToDate) {
             updateCache();
         }

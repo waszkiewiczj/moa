@@ -13,7 +13,7 @@ public interface FeatureSelector extends OptionHandler {
 
     void trainOnInstance(Instance inst);
 
-    Set<Integer> getFeatureIndexes();
+    Set<Integer> getFeatureIndices();
 
     void resetLearning();
 }
