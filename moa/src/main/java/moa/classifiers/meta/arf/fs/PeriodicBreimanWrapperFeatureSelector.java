@@ -10,10 +10,10 @@ public class PeriodicBreimanWrapperFeatureSelector extends BreimanFeatureSelecto
 
     public ClassOption wrapperLearnerOption = new ClassOption("wrapperLearner", 'l',
             "Learner used for feature evaluation.", MultiClassClassifier.class,
-            "moa.classifiers.trees.HoeffdingTree -g 50 -t 0.1");
+            "moa.classifiers.trees.HoeffdingTree");
 
     public IntOption resetLearnerFrequency = new IntOption("resetLearnerFrequency", 'r',
-            "Period length between wrapper learner resets", 1000, 1, Integer.MAX_VALUE);
+            "Period length between wrapper learner resets (-1 = never reset).", 1000, -1, Integer.MAX_VALUE);
 
     private Classifier learner;
     private int periodCount = 0;
@@ -29,7 +29,7 @@ public class PeriodicBreimanWrapperFeatureSelector extends BreimanFeatureSelecto
     public void trainOnInstance(Instance inst) {
         super.trainOnInstance(inst);
 
-        if (periodCount > resetLearnerFrequency.getValue()) {
+        if (periodCount > resetLearnerFrequency.getValue() && resetLearnerFrequency.getValue() != -1) {
             resetLearning();
         }
 
